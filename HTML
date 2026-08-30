@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linha do Tempo - SIBi Unisanta</title>
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #0066cc;
+            --accent-color: #f39c12;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        header p {
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .timeline-item {
+            background: var(--card-bg);
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-header {
+            padding: 1rem 1.5rem;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .timeline-header:hover {
+            background-color: #f0f4f8;
+        }
+
+        .timeline-header .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item.open .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        .timeline-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .timeline-item.open .timeline-body {
+            max-height: 1000px;
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+            border-top: 1px solid #eee;
+        }
+
+        .timeline-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-top: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>História do SIBi - Unisanta</h1>
+        <p>Linha do Tempo Interativa do Sistema Integrado de Bibliotecas</p>
+    </header>
+
+    <main>
+        <div class="timeline" id="timeline"></div>
+    </main>
+
+    <footer>
+        <p>&copy; Sistema Integrado de Bibliotecas - Universidade Santa Cecília</p>
+    </footer>
+
+    <script>
+        const events = [
+            {
+                year: "1932",
+                title: "Início no Casarão Amarelo",
+                description: "Fundação da Escola Primária Santa Cecília no tradicional Casarão Amarelo.",
+                image: "img/1932-casarao.jpg"
+            },
+            {
+                year: "1969",
+                title: "Prédio Oswaldo Cruz",
+                description: "Expansão para a nova unidade do Colégio Santa Cecília na Rua Oswaldo Cruz.",
+                image: "img/1969-predio-oswaldo-cruz.jpg"
+            },
+            {
+                year: "Pioneiros",
+                title: "Primeiros Colaboradores",
+                description: "Dona Joana e os primeiros funcionários responsáveis pela organização do acervo.",
+                image: "img/dona-joana.jpg"
+            },
+            {
+                year: "1973",
+                title: "Obras do Bloco C",
+                description: "Primeira etapa das obras de construção do Bloco C.",
+                image: "img/1973-obras-bloco-c.jpg"
+            },
+            {
+                year: "1977",
+                title: "Profissionalização do Acervo",
+                description: "Registro profissional junto ao CRB-8 e estruturação técnica da biblioteca.",
+                image: "img/1977-carteira-crb.jpg"
+            },
+            {
+                year: "Década de 80",
+                title: "Inauguração e Eventos",
+                description: "Cerimônias e expansão do atendimento comunitário e acadêmico.",
+                image: "img/1980-inauguracao.jpg"
+            },
+            {
+                year: "1989",
+                title: "Edifício Bezerra de Menezes",
+                description: "Inauguração da Biblioteca Central e Laboratórios no Edifício Bezerra de Menezes.",
+                image: "img/1989-edificio-bezerra.jpg"
+            },
+            {
+                year: "1992",
+                title: "Incentivo à Leitura",
+                description: "Matéria no jornal A Tribuna destacando as iniciativas de incentivo à leitura.",
+                image: "img/1992-materia-tribuna.jpg"
+            },
+            {
+                year: "1997",
+                title: "Informatização com WINISIS",
+                description: "Implantação do software WINISIS para automação do catálogo bibliográfico.",
+                image: "img/1997-documento-winisis.jpg"
+            },
+            {
+                year: "2001",
+                title: "Lançamento do Jornal do SIBI",
+                description: "Primeira edição do Jornal do SIBI divulgando serviços e acervos.",
+                image: "img/2001-jornal-sibi-1.jpg"
+            },
+            {
+                year: "2011",
+                title: "Migração para o BNweb",
+                description: "Treinamento e capacitação da equipe para o novo sistema gerenciador BNweb.",
+                image: "img/2011-equipe-bnweb.jpg"
+            },
+            {
+                year: "2016",
+                title: "Honra ao Mérito",
+                description: "Homenagem e entrega do diploma de Honra ao Mérito aos 55 anos do Complexo.",
+                image: "img/2016-diploma-honra-merito.jpg"
+            }
+        ];
+
+        const timelineContainer = document.getElementById('timeline');
+
+        events.forEach(event => {
+            const item = document.createElement('div');
+            item.className = 'timeline-item';
+
+            item.innerHTML = `
+                <div class="timeline-header">
+                    <span>${event.year} - ${event.title}</span>
+                    <span class="toggle-icon">+</span>
+                </div>
+                <div class="timeline-body">
+                    <p>${event.description}</p>
+                    <img src="${event.image}" alt="${event.title}" onerror="this.style.display='none'">
+                </div>
+            `;
+
+            item.querySelector('.timeline-header').addEventListener('click', () => {
+                item.classList.toggle('open');
+            });
+
+            timelineContainer.appendChild(item);
+        });
+    </script>
+</body>
+</html>
